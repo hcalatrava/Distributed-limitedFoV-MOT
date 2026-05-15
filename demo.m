@@ -5,11 +5,12 @@ add_paths;
 rng(0);                                                                                                         % default seed (0)
 
 % --- initialisation
-settings =  gen_settings('case_id',1,'sel_pd',0.98);                                                            % generate settings for a scenario
+settings =  gen_settings('case_id',3,'sel_pd',0.98);                                                            % generate settings for a scenario
 model = gen_model(settings,'meas_sigma',10,'lambda_c',10,'track_threshold',0.001,'metric_type','ospa_union');   % generate model parameters
 truth = gen_truth(model,settings);                                                                              % generate ground truths
 [~,colorarray] = plot_truth(settings.source_info, model, truth);                                                % plot the current truths
 meas = gen_all_meas(settings,model,truth);                                                                      % generate measurements
+% plot_measurements(settings, model, meas, truth);
 
 % --- main fusion program
 fused_agents = run_fused_filter(settings,model,truth,meas);

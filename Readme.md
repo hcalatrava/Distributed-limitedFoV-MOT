@@ -1,65 +1,31 @@
-### Distributed Multi-Object Tracking Under Limited Field of View Sensors
+# Label Hijacking in Track Consensus-Based Distributed Multi-Target Tracking
 
-This repository is provided as part of the our TSP paper:
+Code for the paper:
 
-H. V. Nguyen,  H.  Rezatofighi, B.-N. Vo, D. Ranasinghe, "Distributed Multi-Object Tracking Under Limited Field of View Sensors". *IEEE Transactions on Signal Processing*, vol. 69, pp. 5329-5344, 2021, doi: 10.1109/TSP.2021.3103125. [Paper](https://arxiv.org/abs/2012.12990).
+> H. Calatrava, S. Tang, P. Closas, "Label Hijacking in Track Consensus-Based Distributed Multi-Target Tracking," Under Review.
 
-If you use our provided codes, please consider cite our paper using:
+[[arXiv]](https://arxiv.org/abs/2603.05023) [[Code]](https://github.com/hcalatrava/dmtt-adversarial)
 
-```
-@article{nguyen2021distributed,
-	title={Distributed Multi-Object Tracking Under Limited Field of View Sensors},
-	author={Nguyen, Hoa Van and Rezatofighi, Hamid and Vo, Ba-Ngu and Ranasinghe, Damith C},
-	journal = {{IEEE Transactions on Signal Processing}},
-	year={2021
-	volume={69},
-	number={},
-	pages={5329-5344},
-	doi={10.1109/TSP.2021.3103125}
-}
-```
+---
 
+## Important: Relationship to Van Nguyen et al.
 
+This repository builds directly on the TC-DMTT framework of:
 
-### Brief information
+> H. Van Nguyen, H. Rezatofighi, B.-N. Vo, D. C. Ranasinghe, "Distributed Multi-Object Tracking under Limited Field of View Sensors," IEEE Transactions on Signal Processing, 2021. [[Paper]](https://doi.org/10.1109/TSP.2021.3108811) [[Code]](https://github.com/linh-gist/mv-glmb-ab)
 
-1. All objects move follow a 4D Constant Velocity (x/y position and velocity) with 2D observations (position only).
+The core tracking and fusion code (`filters_joint/`, `data_fusion/`, `track_matching/`, `misc/`) is taken directly from their implementation. Our contributions are the attack injection block in `run_fused_filter.m`, the spoofed trajectory generation in `gen_truth_attack_scenario.m`, the MPC solver in `mpc/solve_MPC.m`, and the modified scenario settings in `gen_settings.m`.
 
-2. Each node runs an LMB filter with joint prediction and update step, with a measurement-based Adaptive Birth Procedure (from data of previous measurements).
+---
 
-3. Call `demo.m`to run it, with the following settings for different scenarios in the [Paper](https://arxiv.org/abs/2012.12990):
+## Requirements
 
-   - `Scenario 1` by a pair of (property, value) of `'case_id',1` in `gen_settings`:  
+- MATLAB (tested on R2023b)
+- [CasADi](https://web.casadi.org/get/) — required for the stealthy attack only. Download the MATLAB version and place it in `mpc/casadi_files/`.
 
-     ```matlab
-     settings =  gen_settings('case_id',1,'sel_pd',0.98);  
-     ```
+---
 
-   - `Scenario 2` by a pair of (property, value) of `'case_id',2` in `gen_settings`:  
+## Usage
 
-     ```matlb
-     settings =  gen_settings('case_id',2,'sel_pd',0.98);  
-     ```
-
-   - `Scenario 3` by a pair of (property, value) of `'case_id',3` in `gen_settings`:  
-
-     ```matlb
-     settings =  gen_settings('case_id',3,'sel_pd',0.98);  
-     ```
-
-4. We only publish our proposed Track Consensus method:
-
-   - Track consensus using OSPA2`TC-OSPA2` by setting a pair of (property, value) to `'metric_type','ospa_union'` in `gen_model`:
-
-     ```matlab
-     model = gen_model(settings,'meas_sigma',10,'lambda_c',10,'track_threshold',0.001,'metric_type','ospa_union'); 
-     ```
-
-   - Track consensus using Wasserstein `TC-WASS` by setting a pair of (property, value) to `'metric_type','wasserstein'`:
-
-     ```matlab
-     model = gen_model(settings,'meas_sigma',10,'lambda_c',10,'track_threshold',0.001,'metric_type','wasserstein');  
-     ```
-
-5. Codes are provided for academic research purposes only. For a commercial license, please contact me at hoavan.nguyen@adelaide.edu.au.
+Open `main.m`, select the attack type and number of trials at the top of the file, and run. 
 
